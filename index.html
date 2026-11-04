@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UN-HOLY ESPORTS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#09090a;--s1:#141416;--s2:#1d1d21;--line:#2a2a30;--red:#d7122f;--red2:#ff2b4a;--tx:#f2f2f3;--mu:#9a9aa3;--ok:#3ddc84;--r:6px}
+*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font:16px/1.55 Barlow,system-ui,sans-serif;min-height:100vh}
+h1,h2,h3{font-family:'Big Shoulders Display',Impact,sans-serif;line-height:1;letter-spacing:.01em}
+h1{font-size:clamp(3rem,13vw,7.5rem);font-weight:900}h2{font-size:2.2rem;margin-bottom:1rem}h3{font-size:1.5rem}
+a{color:inherit}:focus-visible{outline:2px solid var(--red2);outline-offset:2px}
+header{position:sticky;top:0;z-index:20;background:rgba(9,9,10,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem}
+.logo{font:900 1.7rem 'Big Shoulders Display';text-decoration:none}.logo b{color:var(--red2);text-shadow:0 0 14px rgba(255,43,74,.55)}
+nav{display:flex;gap:1.1rem;align-items:center}nav a{text-decoration:none;color:var(--mu);font-weight:500}nav a:hover,nav a.on{color:var(--tx)}
+#burger{display:none;background:none;border:1px solid var(--line);color:var(--tx);padding:.4rem .7rem;border-radius:var(--r)}
+@media(max-width:820px){#burger{display:block}nav{display:none;position:absolute;top:100%;left:0;right:0;background:var(--s1);flex-direction:column;align-items:stretch;padding:1rem;border-bottom:1px solid var(--line)}nav.open{display:flex}}
+main{max-width:1100px;margin:auto;padding:1.5rem 1rem 4rem}
+.btn{display:inline-block;background:var(--red);color:#fff;border:0;padding:.7rem 1.3rem;border-radius:var(--r);font:600 1rem Barlow;cursor:pointer;text-decoration:none;transition:background .15s,box-shadow .15s}
+.btn:hover{background:var(--red2);box-shadow:0 0 18px rgba(255,43,74,.4)}.btn.ghost{background:none;border:1px solid var(--line)}.btn.ghost:hover{border-color:var(--red2);box-shadow:none}.btn.sm{padding:.35rem .8rem;font-size:.9rem}
+.card{background:var(--s1);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:var(--r);padding:1.1rem}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}.mu{color:var(--mu)}.sec{margin-top:3rem}
+.tag{display:inline-block;font-size:.8rem;font-weight:600;padding:.1rem .55rem;border-radius:99px;border:1px solid var(--line);color:var(--mu)}
+.tag.Live{color:#fff;background:var(--red);border-color:var(--red);animation:pulse 1.6s infinite}.tag.Approved{color:var(--ok);border-color:var(--ok)}.tag.Rejected{color:var(--red2);border-color:var(--red2)}
+@keyframes pulse{50%{box-shadow:0 0 12px var(--red2)}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.hero{padding:3rem 0 1rem;border-bottom:1px solid var(--line)}.hero h1 span{color:var(--red2);display:block}.hero p{max-width:34rem;margin:1.2rem 0 1.6rem;color:var(--mu);font-size:1.15rem}
+.hero .row{display:flex;gap:.8rem;flex-wrap:wrap}
+table{width:100%;border-collapse:collapse;background:var(--s1);border:1px solid var(--line)}th,td{padding:.65rem .7rem;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--s2);color:var(--mu);font-weight:600;font-size:.9rem}th:nth-child(2),td:nth-child(2){text-align:left;width:100%}td:first-child{font:900 1.3rem 'Big Shoulders Display';color:var(--red2);text-align:center}
+tr:first-child td:first-child{color:#fff}td.pts{font-weight:700}.scroll{overflow-x:auto}
+form{display:grid;gap:.9rem;max-width:640px}label{display:grid;gap:.3rem;font-weight:500;font-size:.95rem}
+input,select,textarea{background:var(--s2);border:1px solid var(--line);color:var(--tx);padding:.65rem .75rem;border-radius:var(--r);font:inherit;width:100%}input:focus,select:focus,textarea:focus{border-color:var(--red2);outline:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}fieldset{border:1px solid var(--line);border-radius:var(--r);padding:.9rem;display:grid;gap:.6rem}legend{padding:0 .4rem;color:var(--mu)}
+#toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:50;display:grid;gap:.5rem;width:min(92vw,420px)}
+.t{background:var(--s2);border:1px solid var(--line);border-left:4px solid var(--ok);padding:.8rem 1rem;border-radius:var(--r)}.t.err{border-left-color:var(--red2)}
+.note{background:var(--s1);border:1px dashed var(--red);padding:1rem;border-radius:var(--r);margin-bottom:1rem}
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem}.tabs .btn.on{background:var(--red)}.tabs .btn:not(.on){background:none;border:1px solid var(--line)}
+.stat{font:900 2.6rem 'Big Shoulders Display'}.rowc{display:flex;justify-content:space-between;gap:.8rem;align-items:center;flex-wrap:wrap}
+footer{border-top:1px solid var(--line);padding:1.5rem 1rem;text-align:center;color:var(--mu)}
+</style></head><body>
+<header><div class="bar"><a class="logo" href="#home">UN<b>-</b>HOLY</a><button id="burger" aria-label="Menu">Menu</button>
+<nav id="nav"><a href="#tournaments">Tournaments</a><a href="#leaderboard">Leaderboard</a><a href="#results">Results</a><a href="#rules">Rules</a><a href="#contact">Contact</a><a id="admlink" href="#admin" hidden>Admin</a><a id="authlink" href="#login" class="btn sm">Log in</a></nav></div></header>
+<main id="app"></main><footer>UN-HOLY ESPORTS · Play hard. Rise UN-HOLY. · Community-run; not affiliated with or endorsed by Garena.</footer><div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+/* ====== CONFIG: paste your Supabase project values (Project Settings > API). The anon key is meant to be public; RLS protects data. ====== */
+const SUPABASE_URL = "", SUPABASE_ANON_KEY = "";
+const db = SUPABASE_URL && SUPABASE_ANON_KEY ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+const $ = s => document.querySelector(s), app = $('#app');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = d => new Date(d).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
+const SIZE = {Squad:4, Duo:2, Solo:1};
+let user = null, isAdmin = false;
+function toast(m, err) { const e = document.createElement('div'); e.className = 't' + (err ? ' err' : ''); e.setAttribute('role', err ? 'alert' : 'status'); e.textContent = m; $('#toast').append(e); setTimeout(() => e.remove(), 5000); }
+const fail = e => toast(e?.message || String(e), true);
+async function q(p) { const r = await p; if (r.error) throw r.error; return r.data; }
+const tcard = t => `<a class="card" style="text-decoration:none" href="#t/${t.id}"><div class="rowc"><span class="tag ${t.status}">${t.status}</span><span class="mu">${t.format}</span></div><h3 style="margin:.6rem 0 .3rem">${esc(t.title)}</h3><p class="mu">Starts ${fmt(t.starts_at)}<br>Register by ${fmt(t.deadline)}</p></a>`;
+function lbTable(rows) {
+  if (!rows.length) return '<p class="mu">No verified results yet. Rankings appear after an admin verifies a match.</p>';
+  rows = rows.map(r => ({...r, total: +r.placement_pts + +r.kill_pts})).sort((a, b) => b.total - a.total || b.booyahs - a.booyahs || b.kills - a.kills);
+  return `<div class="scroll"><table><tr><th>#</th><th>Team</th><th>MP</th><th>Booyah</th><th>Kills</th><th>Place pts</th><th>Kill pts</th><th>Total</th></tr>${rows.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.team_name)}</td><td>${r.matches}</td><td>${r.booyahs}</td><td>${r.kills}</td><td>${r.placement_pts}</td><td>${r.kill_pts}</td><td class="pts">${r.total}</td></tr>`).join('')}</table></div>`;
+}
+const needDb = () => db ? '' : `<div class="note"><b>Backend not connected.</b> Add your Supabase URL and anon key in the CONFIG line of this file (see README steps). Until then no data can be loaded or saved.</div>`;
+
+const routes = {
+  async home() {
+    let t = [], lb = [], an = [], res = [];
+    if (db) { [t, lb, an, res] = await Promise.all([q(db.from('tournaments').select('*').neq('status', 'Completed').order('starts_at').limit(3)), q(db.from('leaderboard').select('*')), q(db.from('announcements').select('*').order('created_at', {ascending: false}).limit(2)), q(db.from('results_public').select('*').order('match_no', {ascending: false}).limit(6))]); }
+    const open = t.filter(x => new Date(x.deadline) > new Date());
+    const top = Object.values(lb.reduce((a, r) => { (a[r.team_name] ??= {...r, placement_pts: 0, kill_pts: 0, kills: 0}); a[r.team_name].placement_pts += +r.placement_pts; a[r.team_name].kill_pts += +r.kill_pts; a[r.team_name].kills += r.kills; return a; }, {}));
+    return `${needDb()}<section class="hero"><h1>PLAY HARD.<span>RISE UN-HOLY.</span></h1><p>Free Fire MAX community tournaments. Register your squad, play the lobby, and watch verified results land on the board.</p><div class="row"><a class="btn" href="#register">Register your team</a><a class="btn ghost" href="#tournaments">Browse tournaments</a></div></section>
+    ${an.map(a => `<div class="note sec" style="margin-top:1.5rem"><b>${esc(a.title)}</b><br>${esc(a.body)}</div>`).join('')}
+    <section class="sec"><h2>Upcoming tournaments</h2><p class="mu" style="margin-bottom:1rem">Registration: ${open.length ? `<span class="tag Approved">${open.length} open</span>` : '<span class="tag">No tournament open right now</span>'}</p><div class="grid">${t.map(tcard).join('') || '<p class="mu">Nothing scheduled yet.</p>'}</div></section>
+    <section class="sec"><h2>Top teams</h2>${lbTable(top).replace(/<p class="mu">.*<\/p>/, '<p class="mu">Teams appear here after their first verified match.</p>')}</section>
+    <section class="sec"><h2>Latest results</h2>${res.length ? `<div class="grid">${res.map(r => `<div class="card"><b>${esc(r.team_name)}</b><p class="mu">Match ${r.match_no} · Placed ${r.placement} · ${r.kills} kills · ${r.points} pts</p></div>`).join('')}</div>` : '<p class="mu">No verified match results yet.</p>'}</section>`;
+  },
+  async tournaments() {
+    const t = db ? await q(db.from('tournaments').select('*').order('starts_at', {ascending: false})) : [];
+    return `${needDb()}<h2>Tournaments</h2><div class="grid">${t.map(tcard).join('') || '<p class="mu">No tournaments published yet.</p>'}</div>`;
+  },
+  async t(id) {
+    const [t, lb, regs, room] = await Promise.all([q(db.from('tournaments').select('*').eq('id', id).single()), q(db.from('leaderboard').select('*').eq('tournament_id', id)), q(db.from('registrations').select('id,status,team_name').eq('tournament_id', id).neq('status', 'Rejected')), db.from('tournament_rooms').select('*').eq('tournament_id', id).maybeSingle()]);
+    const open = new Date(t.deadline) > new Date() && t.status === 'Upcoming' && regs.length < t.max_teams;
+    const mine = user ? await q(db.from('registrations').select('team_name,status').eq('tournament_id', id).eq('user_id', user.id)) : [];
+    const r = room.data;
+    return `<div class="rowc"><h2>${esc(t.title)}</h2><span class="tag ${t.status}">${t.status}</span></div><p class="mu">${t.format} · Starts ${fmt(t.starts_at)} · Registration closes ${fmt(t.deadline)} · ${regs.length}/${t.max_teams} teams</p>
+    <p style="margin:1rem 0;white-space:pre-wrap">${esc(t.description)}</p>${t.schedule ? `<div class="card"><h3>Schedule</h3><p style="white-space:pre-wrap">${esc(t.schedule)}</p></div>` : ''}
+    <div class="card" style="margin-top:1rem"><h3>Room details</h3>${r && r.room_id ? `<p>Room ID: <b>${esc(r.room_id)}</b> · Password: <b>${esc(r.room_pass)}</b></p>` : '<p class="mu">Shown here to approved teams once the organiser publishes them.</p>'}</div>
+    ${mine.map(m => `<p style="margin-top:1rem">Your team <b>${esc(m.team_name)}</b>: <span class="tag ${m.status}">${m.status}</span></p>`).join('')}
+    <p style="margin:1.2rem 0">${open ? `<a class="btn" href="#register/${t.id}">Register a team</a>` : '<span class="tag">Registration closed</span>'}</p>
+    <h2 class="sec">Standings</h2>${lbTable(lb)}<p class="mu" style="margin-top:.8rem">Scoring (set by the organiser, not official Garena scoring): placement points ${esc(t.scoring.placement.join(', '))} for 1st, 2nd, …; ${t.scoring.per_kill} per kill.</p>`;
+  },
+  async register(tid) {
+    if (!user) return `<div class="note">Log in or create an account to register a team.</div><a class="btn" href="#login">Log in / Register</a>`;
+    const ts = await q(db.from('tournaments').select('*').eq('status', 'Upcoming').gt('deadline', new Date().toISOString()).order('starts_at'));
+    if (!ts.length) return '<h2>Team registration</h2><p class="mu">No tournament is open for registration.</p>';
+    setTimeout(() => { const f = $('#rf'), upd = () => { const n = SIZE[ts.find(x => x.id === f.tid.value).format]; f.querySelectorAll('[data-p]').forEach(e => { e.hidden = +e.dataset.p > n - 1; e.querySelectorAll('input').forEach(i => i.disabled = e.hidden); }); f.sub.hidden = n === 1; };
+      f.tid.onchange = upd; upd(); f.onsubmit = async e => { e.preventDefault(); const g = n => f[n]?.value.trim(), uidOk = v => /^\d{6,12}$/.test(v);
+        const fmtSize = SIZE[ts.find(x => x.id === g('tid')).format], players = [{ign: g('cign'), uid: g('cuid')}];
+        for (let i = 1; i < fmtSize; i++) players.push({ign: g('pi' + i), uid: g('pu' + i)});
+        if (players.some(p => !p.ign || !uidOk(p.uid))) return toast('Every player needs an IGN and a numeric UID (6–12 digits).', true);
+        if (new Set(players.map(p => p.uid)).size < players.length) return toast('Duplicate UIDs in the team.', true);
+        const sub = g('si') ? {ign: g('si'), uid: g('su')} : null; if (sub && !uidOk(sub.uid)) return toast('Substitute UID must be 6–12 digits.', true);
+        f.btn.disabled = true; try { await q(db.from('registrations').insert({tournament_id: g('tid'), team_name: g('team'), captain_ign: g('cign'), captain_uid: g('cuid'), players, substitute: sub, contact: g('contact')}));
+          toast('Registration received. Status: Pending approval. Check the tournament page for updates.'); location.hash = 't/' + g('tid'); } catch (er) { fail(er.code === '23505' ? {message: 'That team name is already registered for this tournament.'} : er.code === '42501' ? {message: 'Registration is closed or the tournament is full.'} : er); f.btn.disabled = false; } }; });
+    return `<h2>Team registration</h2><form id="rf"><label>Tournament<select name="tid">${ts.map(t => `<option value="${t.id}" ${t.id === tid ? 'selected' : ''}>${esc(t.title)} (${t.format})</option>`).join('')}</select></label>
+    <label>Team name<input name="team" required maxlength="40"></label><fieldset><legend>Captain</legend><div class="two"><label>IGN<input name="cign" required maxlength="30"></label><label>UID<input name="cuid" required inputmode="numeric" pattern="\\d{6,12}"></label></div></fieldset>
+    ${[1, 2, 3].map(i => `<fieldset data-p="${i}"><legend>Player ${i + 1}</legend><div class="two"><label>IGN<input name="pi${i}" required maxlength="30"></label><label>UID<input name="pu${i}" required inputmode="numeric" pattern="\\d{6,12}"></label></div></fieldset>`).join('')}
+    <fieldset name="sub"><legend>Substitute (optional)</legend><div class="two"><label>IGN<input name="si" maxlength="30"></label><label>UID<input name="su" inputmode="numeric"></label></div></fieldset>
+    <label>Contact (WhatsApp or Discord)<input name="contact" required maxlength="60"></label><p class="mu">Your UIDs and contact are visible only to you and tournament admins.</p><button class="btn" name="btn">Submit registration</button></form>`;
+  },
+  async leaderboard() {
+    const ts = db ? await q(db.from('tournaments').select('id,title').order('starts_at', {ascending: false})) : [];
+    setTimeout(() => { const s = $('#lbs'); if (!s) return; s.onchange = async () => { $('#lbt').innerHTML = lbTable(await q(db.from('leaderboard').select('*').eq('tournament_id', s.value))); }; s.onchange(); });
+    return `${needDb()}<h2>Leaderboard</h2>${ts.length ? `<label style="max-width:360px;margin-bottom:1rem">Tournament<select id="lbs">${ts.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join('')}</select></label><div id="lbt"></div>` : '<p class="mu">No tournaments yet.</p>'}`;
+  },
+  async results() {
+    const rs = db ? await q(db.from('results_public').select('*').order('match_no', {ascending: false}).order('placement')) : [];
+    const by = rs.reduce((a, r) => ((a[r.match_id] ??= []).push(r), a), {});
+    return `${needDb()}<h2>Match results</h2>${Object.values(by).map(m => `<h3 class="sec" style="margin-top:1.5rem">Match ${m[0].match_no}</h3><div class="scroll"><table><tr><th>#</th><th>Team</th><th>Kills</th><th>Points</th></tr>${m.map(r => `<tr><td>${r.placement}</td><td>${esc(r.team_name)}</td><td>${r.kills}</td><td class="pts">${r.points}</td></tr>`).join('')}</table></div>`).join('') || '<p class="mu">No verified results published yet.</p>'}`;
+  },
+  async rules() {
+    return `<h2>Rules & regulations</h2><div class="card" style="max-width:720px"><p>These are the organiser's default rules. Admins may add tournament-specific rules on each tournament page.</p><ul style="padding-left:1.2rem;margin-top:.8rem;display:grid;gap:.5rem"><li>Play on Free Fire MAX with the registered IGN and UID only.</li><li>Hacks, third-party tools, emulator macros and teaming with other squads result in disqualification.</li><li>Join the custom room on time. Late teams may be refused entry.</li><li>Room ID and password are private. Do not share them.</li><li>Results are final after admin verification. Raise disputes through Contact with proof (recording or screenshot).</li><li>Scoring is set per tournament by the organiser and is not official Garena scoring.</li><li>The organiser may reject any registration and may update these rules before a tournament starts.</li></ul></div>`;
+  },
+  async contact() {
+    setTimeout(() => { const f = $('#cf'); f.onsubmit = async e => { e.preventDefault(); if (!db) return toast('Backend not connected.', true); try { await q(db.from('messages').insert({name: f.n.value.trim(), email: f.e.value.trim(), body: f.m.value.trim()})); toast('Message sent. An admin will reply by email.'); f.reset(); } catch (er) { fail(er); } }; });
+    return `<h2>Contact us</h2><form id="cf"><label>Name<input name="n" required maxlength="60"></label><label>Email<input name="e" type="email" required></label><label>Message<textarea name="m" rows="5" required maxlength="1500"></textarea></label><button class="btn">Send message</button></form>`;
+  },
+  async login() {
+    if (user) { setTimeout(() => $('#out').onclick = async () => { await db.auth.signOut(); toast('Logged out.'); location.hash = 'home'; }); return `<h2>Account</h2><p class="mu" style="margin-bottom:1rem">Signed in as ${esc(user.email)} (${isAdmin ? 'admin' : 'participant'}).</p><button id="out" class="btn">Log out</button>`; }
+    setTimeout(() => { const f = $('#lf'); let mode = 'in'; $('#sw').onclick = () => { mode = mode === 'in' ? 'up' : 'in'; f.go.textContent = mode === 'in' ? 'Log in' : 'Create account'; $('#sw').textContent = mode === 'in' ? 'Need an account? Register' : 'Have an account? Log in'; };
+      f.onsubmit = async e => { e.preventDefault(); if (!db) return toast('Backend not connected.', true); const c = {email: f.e.value.trim(), password: f.p.value}; try { if (mode === 'in') { await q(db.auth.signInWithPassword(c)); location.hash = 'home'; } else { const d = await q(db.auth.signUp(c)); toast(d.session ? 'Account created.' : 'Account created. Confirm your email, then log in.'); if (d.session) location.hash = 'home'; } } catch (er) { fail(er); } }; });
+    return `${needDb()}<h2>Log in / Register</h2><form id="lf"><label>Email<input name="e" type="email" required autocomplete="email"></label><label>Password (8+ characters)<input name="p" type="password" minlength="8" required autocomplete="current-password"></label><button class="btn" name="go">Log in</button><button type="button" id="sw" class="btn ghost">Need an account? Register</button></form>`;
+  },
+  async admin() {
+    if (!isAdmin) return '<h2>Admin</h2><p class="mu">Admin access only. Admin rights are granted in the database, never in the browser.</p>';
+    const [ts, regs, msgs] = await Promise.all([q(db.from('tournaments').select('*').order('starts_at', {ascending: false})), q(db.from('registrations').select('*').order('created_at', {ascending: false})), q(db.from('messages').select('*').order('created_at', {ascending: false}).limit(20))]);
+    const tn = id => esc(ts.find(t => t.id === id)?.title);
+    const cnt = s => regs.filter(r => r.status === s).length;
+    setTimeout(() => wireAdmin(ts, regs), 0);
+    return `<h2>Admin dashboard</h2><div class="grid" style="margin-bottom:1.5rem">${['Pending', 'Approved', 'Rejected'].map(s => `<div class="card"><div class="stat">${cnt(s)}</div>${s} registrations</div>`).join('')}<div class="card"><div class="stat">${ts.length}</div>Tournaments</div></div>
+    <h3>Registrations</h3><div class="scroll"><table><tr><th>Tournament</th><th>Team</th><th>Captain / UID</th><th>Contact</th><th>Status</th><th></th></tr>${regs.map(r => `<tr><td style="text-align:left">${tn(r.tournament_id)}</td><td style="width:auto">${esc(r.team_name)}</td><td>${esc(r.captain_ign)} / ${esc(r.captain_uid)}</td><td>${esc(r.contact)}</td><td><span class="tag ${r.status}">${r.status}</span></td><td><button class="btn sm" data-rs="${r.id}:Approved">Approve</button> <button class="btn sm ghost" data-rs="${r.id}:Rejected">Reject</button></td></tr>`).join('') || '<tr><td colspan="6">None yet</td></tr>'}</table></div>
+    <h3 class="sec">Create tournament</h3><form id="tf"><label>Title<input name="title" required></label><div class="two"><label>Format<select name="format"><option>Squad</option><option>Duo</option><option>Solo</option></select></label><label>Max teams<input name="max" type="number" min="2" value="12" required></label></div>
+    <div class="two"><label>Starts<input name="starts" type="datetime-local" required></label><label>Registration deadline<input name="deadline" type="datetime-local" required></label></div><label>Description & rules<textarea name="desc" rows="3"></textarea></label><label>Match schedule<textarea name="sched" rows="2" placeholder="Match 1 – 8:00 PM"></textarea></label>
+    <label>Placement points, 1st to last (comma-separated)<input name="pp" value="12,9,8,7,6,5,4,3,2,1,0,0"></label><label>Points per kill<input name="pk" type="number" step="0.5" min="0" value="1"></label><p class="mu">Defaults are a sample system chosen by you, not official Garena scoring.</p><div class="two"><label>Room ID (optional)<input name="rid"></label><label>Room password<input name="rpw"></label></div><button class="btn">Publish tournament</button></form>
+    <h3 class="sec">Manage tournaments</h3><div class="grid">${ts.map(t => `<div class="card"><b>${esc(t.title)}</b><div class="rowc" style="margin-top:.6rem"><select data-st="${t.id}">${['Upcoming', 'Live', 'Completed'].map(s => `<option ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}</select><button class="btn sm ghost" data-del="${t.id}">Delete</button></div></div>`).join('')}</div>
+    <h3 class="sec">Enter match results</h3><form id="mf"><label>Tournament<select name="t" id="mt"><option value="">Choose…</option>${ts.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join('')}</select></label><div id="mrows"></div></form>
+    <h3 class="sec">Announcement</h3><form id="af"><label>Title<input name="t" required></label><label>Body<textarea name="b" rows="3" required></textarea></label><button class="btn">Publish announcement</button></form>
+    <h3 class="sec">Contact messages</h3>${msgs.map(m => `<div class="card" style="margin-bottom:.6rem"><b>${esc(m.name)}</b> <span class="mu">${esc(m.email)}</span><p>${esc(m.body)}</p></div>`).join('') || '<p class="mu">None.</p>'}`;
+  }
+};
+function wireAdmin(ts, regs) {
+  const run = async (fn, ok) => { try { await fn(); toast(ok); route(); } catch (e) { fail(e); } };
+  document.querySelectorAll('[data-rs]').forEach(b => b.onclick = () => { const [id, s] = b.dataset.rs.split(':'); run(() => q(db.from('registrations').update({status: s}).eq('id', id)), 'Registration ' + s.toLowerCase() + '.'); });
+  document.querySelectorAll('[data-st]').forEach(s => s.onchange = () => run(() => q(db.from('tournaments').update({status: s.value}).eq('id', s.dataset.st)), 'Status updated.'));
+  document.querySelectorAll('[data-del]').forEach(b => b.onclick = () => confirm('Delete this tournament and all its data?') && run(() => q(db.from('tournaments').delete().eq('id', b.dataset.del)), 'Tournament deleted.'));
+  $('#tf').onsubmit = e => { e.preventDefault(); const f = e.target, pp = f.pp.value.split(',').map(x => +x.trim()); if (pp.some(isNaN)) return toast('Placement points must be numbers.', true); if (new Date(f.deadline.value) > new Date(f.starts.value)) return toast('Deadline must be before the start time.', true);
+    run(async () => { const t = await q(db.from('tournaments').insert({title: f.title.value.trim(), format: f.format.value, max_teams: +f.max.value, starts_at: new Date(f.starts.value).toISOString(), deadline: new Date(f.deadline.value).toISOString(), description: f.desc.value, schedule: f.sched.value, scoring: {placement: pp, per_kill: +f.pk.value}}).select().single());
+      if (f.rid.value) await q(db.from('tournament_rooms').insert({tournament_id: t.id, room_id: f.rid.value, room_pass: f.rpw.value})); }, 'Tournament published.'); };
+  $('#af').onsubmit = e => { e.preventDefault(); const f = e.target; run(() => q(db.from('announcements').insert({title: f.t.value, body: f.b.value})), 'Announcement published.'); };
+  $('#mt').onchange = async e => { const id = e.target.value, box = $('#mrows'); if (!id) return box.innerHTML = '';
+    const ap = regs.filter(r => r.tournament_id === id && r.status === 'Approved'); if (!ap.length) return box.innerHTML = '<p class="mu">No approved teams yet.</p>';
+    box.innerHTML = `<label style="max-width:160px">Match number<input name="mn" type="number" min="1" required value="1"></label><div class="scroll"><table><tr><th>Team</th><th>Placement</th><th>Kills</th></tr>${ap.map(r => `<tr><td style="text-align:left;width:auto">${esc(r.team_name)}</td><td><input data-pl="${r.id}" type="number" min="1" max="52" required style="width:80px"></td><td><input data-k="${r.id}" type="number" min="0" value="0" required style="width:80px"></td></tr>`).join('')}</table></div><button class="btn" style="margin-top:.8rem">Save and verify results</button>`;
+    $('#mf').onsubmit = ev => { ev.preventDefault(); run(async () => { const m = await q(db.from('matches').insert({tournament_id: id, match_no: +$('#mf [name=mn]').value}).select().single());
+      await q(db.from('match_results').insert(ap.map(r => ({match_id: m.id, registration_id: r.id, placement: +$(`[data-pl="${r.id}"]`).value, kills: +$(`[data-k="${r.id}"]`).value, verified: true})))); }, 'Results verified and published.'); }; };
+}
+async function route() {
+  const [name, arg] = (location.hash.slice(1) || 'home').split('/'); document.querySelectorAll('nav a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + name)); $('#nav').classList.remove('open');
+  const fn = routes[name] || routes.home; app.innerHTML = '<p class="mu">Loading…</p>';
+  try { if (!db && ['t', 'register', 'admin'].includes(name)) app.innerHTML = needDb(); else app.innerHTML = await fn(arg); } catch (e) { app.innerHTML = `<div class="note"><b>Something went wrong.</b> ${esc(e.message)}<br>If this is a new project, run schema.sql in Supabase first.</div>`; }
+  window.scrollTo(0, 0);
+}
+async function session() {
+  if (!db) return; const {data} = await db.auth.getSession(); user = data.session?.user ?? null; isAdmin = false;
+  if (user) { const {data: p} = await db.from('profiles').select('role').eq('id', user.id).maybeSingle(); isAdmin = p?.role === 'admin'; }
+  $('#admlink').hidden = !isAdmin; $('#authlink').textContent = user ? 'Account' : 'Log in';
+}
+$('#burger').onclick = () => $('#nav').classList.toggle('open');
+window.addEventListener('hashchange', route);
+if (db) db.auth.onAuthStateChange(async () => { await session(); route(); });
+session().then(route);
+</script></body></html>
