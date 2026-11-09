@@ -46,7 +46,7 @@ footer{border-top:1px solid var(--line);padding:1.5rem 1rem;text-align:center;co
 <script>
 /* ====== CONFIG: paste your Supabase project values (Project Settings > API). The anon key is meant to be public; RLS protects data. ====== */
 const SUPABASE_URL = "https://imovyzwntkehccqiqyvd.supabase.co", SUPABASE_ANON_KEY = "sb_publishable_AkLXojEgNWx_2OW1Hi3ujA_irofYpvz";
-const db = SUPABASE_URL && SUPABASE_ANON_KEY ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+const db = SUPABASE_URL && SUPABASE_ANON_KEY ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {auth: {lock: (n, t, fn) => fn()}}) : null;
 const $ = s => document.querySelector(s), app = $('#app');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = d => new Date(d).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
@@ -55,6 +55,7 @@ let user = null, isAdmin = false;
 function toast(m, err) { const e = document.createElement('div'); e.className = 't' + (err ? ' err' : ''); e.setAttribute('role', err ? 'alert' : 'status'); e.textContent = m; $('#toast').append(e); setTimeout(() => e.remove(), 5000); }
 const fail = e => toast(e?.message || String(e), true);
 async function q(p) { const r = await p; if (r.error) throw r.error; return r.data; }
+const chBtns = c => c.map(x => `<a class="btn sm ghost" href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)}</a>`).join(' ');
 const tcard = t => `<a class="card" style="text-decoration:none" href="#t/${t.id}"><div class="rowc"><span class="tag ${t.status}">${t.status}</span><span class="mu">${t.format}</span></div><h3 style="margin:.6rem 0 .3rem">${esc(t.title)}</h3><p class="mu">Starts ${fmt(t.starts_at)}<br>Register by ${fmt(t.deadline)}</p></a>`;
 function lbTable(rows) {
   if (!rows.length) return '<p class="mu">No verified results yet. Rankings appear after an admin verifies a match.</p>';
@@ -65,11 +66,12 @@ const needDb = () => db ? '' : `<div class="note"><b>Backend not connected.</b> 
 
 const routes = {
   async home() {
-    let t = [], lb = [], an = [], res = [];
-    if (db) { [t, lb, an, res] = await Promise.all([q(db.from('tournaments').select('*').neq('status', 'Completed').order('starts_at').limit(3)), q(db.from('leaderboard').select('*')), q(db.from('announcements').select('*').order('created_at', {ascending: false}).limit(2)), q(db.from('results_public').select('*').order('match_no', {ascending: false}).limit(6))]); }
+    let t = [], lb = [], an = [], res = [], ch = [];
+    if (db) { [t, lb, an, res, ch] = await Promise.all([q(db.from('tournaments').select('*').neq('status', 'Completed').order('starts_at').limit(3)), q(db.from('leaderboard').select('*')), q(db.from('announcements').select('*').order('created_at', {ascending: false}).limit(2)), q(db.from('results_public').select('*').order('match_no', {ascending: false}).limit(6)), q(db.from('channels').select('*').order('created_at'))]); }
     const open = t.filter(x => new Date(x.deadline) > new Date());
     const top = Object.values(lb.reduce((a, r) => { (a[r.team_name] ??= {...r, placement_pts: 0, kill_pts: 0, kills: 0}); a[r.team_name].placement_pts += +r.placement_pts; a[r.team_name].kill_pts += +r.kill_pts; a[r.team_name].kills += r.kills; return a; }, {}));
     return `${needDb()}<section class="hero"><h1>PLAY HARD.<span>RISE UN-HOLY.</span></h1><p>Free Fire MAX community tournaments. Register your squad, play the lobby, and watch verified results land on the board.</p><div class="row"><a class="btn" href="#register">Register your team</a><a class="btn ghost" href="#tournaments">Browse tournaments</a></div></section>
+    ${t.some(x => x.status === 'Live') ? '<div class="note" style="margin-top:1.5rem"><b>🔴 LIVE NOW:</b> a tournament is in progress. <a href="#tournaments">See standings</a></div>' : ''}${ch.length ? `<div style="margin-top:1.5rem"><h3>Join our channels</h3><div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.6rem">${chBtns(ch)}</div></div>` : ''}
     ${an.map(a => `<div class="note sec" style="margin-top:1.5rem"><b>${esc(a.title)}</b><br>${esc(a.body)}</div>`).join('')}
     <section class="sec"><h2>Upcoming tournaments</h2><p class="mu" style="margin-bottom:1rem">Registration: ${open.length ? `<span class="tag Approved">${open.length} open</span>` : '<span class="tag">No tournament open right now</span>'}</p><div class="grid">${t.map(tcard).join('') || '<p class="mu">Nothing scheduled yet.</p>'}</div></section>
     <section class="sec"><h2>Top teams</h2>${lbTable(top).replace(/<p class="mu">.*<\/p>/, '<p class="mu">Teams appear here after their first verified match.</p>')}</section>
@@ -95,6 +97,7 @@ const routes = {
     if (!user) return `<div class="note">Log in or create an account to register a team.</div><a class="btn" href="#login">Log in / Register</a>`;
     const ts = await q(db.from('tournaments').select('*').eq('status', 'Upcoming').gt('deadline', new Date().toISOString()).order('starts_at'));
     if (!ts.length) return '<h2>Team registration</h2><p class="mu">No tournament is open for registration.</p>';
+    const ch = await q(db.from('channels').select('*').order('created_at'));
     setTimeout(() => { const f = $('#rf'), upd = () => { const n = SIZE[ts.find(x => x.id === f.tid.value).format]; f.querySelectorAll('[data-p]').forEach(e => { e.hidden = +e.dataset.p > n - 1; e.querySelectorAll('input').forEach(i => i.disabled = e.hidden); }); f.sub.hidden = n === 1; };
       f.tid.onchange = upd; upd(); f.onsubmit = async e => { e.preventDefault(); const g = n => f[n]?.value.trim(), uidOk = v => /^\d{6,12}$/.test(v);
         const fmtSize = SIZE[ts.find(x => x.id === g('tid')).format], players = [{ign: g('cign'), uid: g('cuid')}];
@@ -109,7 +112,7 @@ const routes = {
     <label>Team name<input name="team" required maxlength="40"></label><fieldset><legend>Captain</legend><div class="two"><label>IGN<input name="cign" required maxlength="30"></label><label>UID<input name="cuid" required inputmode="numeric" pattern="\\d{6,12}"></label></div></fieldset>
     ${[1, 2, 3].map(i => `<fieldset data-p="${i}"><legend>Player ${i + 1}</legend><div class="two"><label>IGN<input name="pi${i}" required maxlength="30"></label><label>UID<input name="pu${i}" required inputmode="numeric" pattern="\\d{6,12}"></label></div></fieldset>`).join('')}
     <fieldset name="sub"><legend>Substitute (optional)</legend><div class="two"><label>IGN<input name="si" maxlength="30"></label><label>UID<input name="su" inputmode="numeric"></label></div></fieldset>
-    <label>Contact (WhatsApp or Discord)<input name="contact" required maxlength="60"></label><label>Your YouTube channel name<input name="yt" required maxlength="60"></label><label style="grid-template-columns:auto 1fr;align-items:center"><input type="checkbox" name="subyt" style="width:auto"> I subscribed to the UN-HOLY YouTube channel</label><p class="mu">Your UIDs and contact are visible only to you and tournament admins.</p><button class="btn" name="btn">Submit registration</button></form>`;
+    <label>Contact (WhatsApp or Discord)<input name="contact" required maxlength="60"></label>${ch.length ? `<fieldset><legend>Join our channels first</legend><div style="display:flex;gap:.6rem;flex-wrap:wrap">${chBtns(ch)}</div></fieldset>` : ''}<label>Your YouTube channel name<input name="yt" required maxlength="60"></label><label style="grid-template-columns:auto 1fr;align-items:center"><input type="checkbox" name="subyt" style="width:auto"> I joined and subscribed to all UN-HOLY channels above</label><p class="mu">Your UIDs and contact are visible only to you and tournament admins.</p><button class="btn" name="btn">Submit registration</button></form>`;
   },
   async leaderboard() {
     const ts = db ? await q(db.from('tournaments').select('id,title').order('starts_at', {ascending: false})) : [];
@@ -136,7 +139,7 @@ const routes = {
   },
   async admin() {
     if (!isAdmin) return '<h2>Admin</h2><p class="mu">Admin access only. Admin rights are granted in the database, never in the browser.</p>';
-    const [ts, regs, msgs] = await Promise.all([q(db.from('tournaments').select('*').order('starts_at', {ascending: false})), q(db.from('registrations').select('*').order('created_at', {ascending: false})), q(db.from('messages').select('*').order('created_at', {ascending: false}).limit(20))]);
+    const [ts, regs, msgs, chs] = await Promise.all([q(db.from('tournaments').select('*').order('starts_at', {ascending: false})), q(db.from('registrations').select('*').order('created_at', {ascending: false})), q(db.from('messages').select('*').order('created_at', {ascending: false}).limit(20)), q(db.from('channels').select('*').order('created_at'))]);
     const tn = id => esc(ts.find(t => t.id === id)?.title);
     const cnt = s => regs.filter(r => r.status === s).length;
     setTimeout(() => wireAdmin(ts, regs), 0);
@@ -148,6 +151,7 @@ const routes = {
     <h3 class="sec">Manage tournaments</h3><div class="grid">${ts.map(t => `<div class="card"><b>${esc(t.title)}</b><div class="rowc" style="margin-top:.6rem"><select data-st="${t.id}">${['Upcoming', 'Live', 'Completed'].map(s => `<option ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}</select><button class="btn sm ghost" data-room="${t.id}">Room / group</button><button class="btn sm ghost" data-del="${t.id}">Delete</button></div></div>`).join('')}</div>
     <h3 class="sec">Enter match results</h3><form id="mf"><label>Tournament<select name="t" id="mt"><option value="">Choose…</option>${ts.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join('')}</select></label><div id="mrows"></div></form>
     <h3 class="sec">Edit results</h3><label style="max-width:360px">Tournament<select id="et"><option value="">Choose…</option>${ts.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join('')}</select></label><div id="er" style="margin-top:.8rem"></div>
+    <h3 class="sec">Channels shown to players</h3>${chs.map(c => `<div class="card" style="margin-bottom:.6rem"><div class="rowc"><span><b>${esc(c.name)}</b> <span class="mu">${esc(c.url)}</span></span><button class="btn sm ghost" data-cd="${c.id}">Remove</button></div></div>`).join('')}<form id="chf"><div class="two"><label>Name<input name="n" required maxlength="30" placeholder="YouTube"></label><label>Link<input name="u" type="url" required placeholder="https://"></label></div><button class="btn">Add channel</button></form>
     <h3 class="sec">Announcement</h3><form id="af"><label>Title<input name="t" required></label><label>Body<textarea name="b" rows="3" required></textarea></label><button class="btn">Publish announcement</button></form>
     <h3 class="sec">Contact messages</h3>${msgs.map(m => `<div class="card" style="margin-bottom:.6rem"><b>${esc(m.name)}</b> <span class="mu">${esc(m.email)}</span><p>${esc(m.body)}</p></div>`).join('') || '<p class="mu">None.</p>'}`;
   }
@@ -170,6 +174,8 @@ function wireAdmin(ts, regs) {
       box.querySelectorAll('[data-es]').forEach(b => b.onclick = async () => { try { await q(db.from('match_results').update({placement: +$(`[data-ep="${b.dataset.es}"]`).value, kills: +$(`[data-ek="${b.dataset.es}"]`).value}).eq('id', b.dataset.es)); toast('Result updated.'); } catch (er) { fail(er); } });
       box.querySelectorAll('[data-ed]').forEach(b => b.onclick = async () => { if (!confirm('Delete this result row?')) return; try { await q(db.from('match_results').delete().eq('id', b.dataset.ed)); toast('Result deleted.'); $('#et').onchange({target: $('#et')}); } catch (er) { fail(er); } });
     } catch (er) { fail(er); } };
+  $('#chf').onsubmit = e => { e.preventDefault(); const f = e.target; if (!/^https?:\/\//.test(f.u.value)) return toast('Link must start with https://', true); run(() => q(db.from('channels').insert({name: f.n.value.trim(), url: f.u.value.trim()})), 'Channel added.'); };
+  document.querySelectorAll('[data-cd]').forEach(b => b.onclick = () => run(() => q(db.from('channels').delete().eq('id', b.dataset.cd)), 'Channel removed.'));
   $('#af').onsubmit = e => { e.preventDefault(); const f = e.target; run(() => q(db.from('announcements').insert({title: f.t.value, body: f.b.value})), 'Announcement published.'); };
   $('#mt').onchange = async e => { const id = e.target.value, box = $('#mrows'); if (!id) return box.innerHTML = '';
     const ap = regs.filter(r => r.tournament_id === id && r.status === 'Approved'); if (!ap.length) return box.innerHTML = '<p class="mu">No approved teams yet.</p>';
@@ -180,7 +186,7 @@ function wireAdmin(ts, regs) {
 async function route() {
   const [name, arg] = (location.hash.slice(1) || 'home').split('/'); document.querySelectorAll('nav a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + name)); $('#nav').classList.remove('open');
   const fn = routes[name] || routes.home; app.innerHTML = '<p class="mu">Loading…</p>';
-  try { if (!db && ['t', 'register', 'admin'].includes(name)) app.innerHTML = needDb(); else app.innerHTML = await fn(arg); } catch (e) { app.innerHTML = `<div class="note"><b>Something went wrong.</b> ${esc(e.message)}<br>If this is a new project, run schema.sql in Supabase first.</div>`; }
+  try { if (!db && ['t', 'register', 'admin'].includes(name)) app.innerHTML = needDb(); else app.innerHTML = await Promise.race([fn(arg), new Promise((_, rej) => setTimeout(() => rej(new Error('The server is not responding. The Supabase project may be paused, or your connection is slow.')), 12000))]); } catch (e) { app.innerHTML = `<div class="note"><b>Something went wrong.</b> ${esc(e.message)}<br>If this is a new project, run schema.sql in Supabase first.<br><br><button class="btn sm" onclick="localStorage.clear();location.reload()">Reset login and retry</button></div>`; }
   window.scrollTo(0, 0);
 }
 async function session() {
@@ -190,6 +196,6 @@ async function session() {
 }
 $('#burger').onclick = () => $('#nav').classList.toggle('open');
 window.addEventListener('hashchange', route);
-if (db) db.auth.onAuthStateChange(async () => { await session(); route(); });
-session().then(route);
+if (db) db.auth.onAuthStateChange(() => { setTimeout(async () => { await session(); route(); }, 0); });
+Promise.race([session(), new Promise(r => setTimeout(r, 6000))]).then(route);
 </script></body></html>
